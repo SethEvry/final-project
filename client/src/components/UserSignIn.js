@@ -1,14 +1,22 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+//context
+import { AuthContext } from "../context/authContext";
+
 export default function UserSignIn() {
+
+  const { signIn } =  useContext(AuthContext)
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(email, password);
+    signIn(email, password)
   }
 
   const handleCancel = (e) => {
