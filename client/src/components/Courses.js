@@ -10,7 +10,7 @@ export default function Courses() {
         <div className="wrap main--grid">
             {data ?
             data.map(course => (
-                <Link className="course--module course--link" to="/" key={course.id}>
+                <Link className="course--module course--link" to={`/courses/${course.id}`} key={course.id}>
                     <h2 className="course--label">Course</h2>
                     <h3 className="course--title">{course.title}</h3>
                 </Link>
