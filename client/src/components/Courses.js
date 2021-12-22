@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
-
-import { useCourses } from "../hooks/useCourses";
 
 export default function Courses() {
     const [data, setData] = useState([]);
-    const { data, isLoading, error } = useCourses("localhost:5000/api/courses")
+    useEffect(()=>{
+      fetch('http://localhost:5000/api/courses').then(res => res.json()).then(data => setData(data))
+    }, [])
     return (
         <div className="wrap main--grid">
-            {!isLoading ?
+            {data ?
             data.map(course => (
                 <Link className="course--module course--link" to={`/courses/${course.id}`} key={course.id}>
                     <h2 className="course--label">Course</h2>
