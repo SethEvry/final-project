@@ -37,7 +37,7 @@ export default function CourseDetail() {
                   <h3 className="course--detail--title">Course</h3>
                   <h4 className="course--name">{course.title}</h4>
                   <p>{`By ${course.user.firstName} ${course.user.lastName}`}</p>
-                  {course.description.split('\n\n').map(string => <p>{string}</p>)}
+                  {course.description.split('\n\n').map((string, index) => <p key={index}>{string}</p>)}
                 </div>
                 <div>
                   <h3 className="course--detail--title">Estimated Time</h3>
