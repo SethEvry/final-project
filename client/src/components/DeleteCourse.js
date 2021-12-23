@@ -5,6 +5,7 @@ export default function DeleteCourse() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  //attempts DELETE then redirects if successful
   const handleDelete = async (e) => {
     const auth = Cookies.get("auth");
     const res = await fetch(`http://localhost:5000/api/courses/${id}`, {
@@ -16,14 +17,19 @@ export default function DeleteCourse() {
     });
     if(res.status === 204) {
         navigate("/")
+    } else {
+      navigate("/error")
     }
 
   };
+
+  //returns to previous page
   const handleCancel = (e) => {
     e.preventDefault();
     navigate(-1);
   };
-
+  
+  //awesome delete confirmation modal
   return (
     <div className="modal-bg">
       <div className="delete-modal">

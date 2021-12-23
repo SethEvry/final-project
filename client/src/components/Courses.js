@@ -2,10 +2,16 @@ import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 
 export default function Courses() {
+
+
     const [data, setData] = useState([]);
+
+    //fetches data on render and sets state
     useEffect(()=>{
       fetch('http://localhost:5000/api/courses').then(res => res.json()).then(data => setData(data))
     }, [])
+
+    
     return (
         <div className="wrap main--grid">
             {data ?

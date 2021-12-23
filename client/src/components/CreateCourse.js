@@ -15,7 +15,9 @@ export default function CreateCourse() {
   const { currentUser } = useContext(AuthContext);
 
   const addCourse = async () => {
+    //checks for authorization
     const auth = Cookies.get("auth");
+
     try {
       const res = await fetch("http://localhost:5000/api/courses/", {
         method: "POST",
@@ -30,6 +32,7 @@ export default function CreateCourse() {
           materialsNeeded,
         }),
       });
+      //gives list of validation errors if POST fails
       if (res.status === 400) {
         const json = await res.json();
         setErrors([...json.errors]);
@@ -54,6 +57,7 @@ export default function CreateCourse() {
 
   return (
     <main>
+    {/* makes sure user is loaded before trying to render the page. (woo asynchronous things!) */}
       {!currentUser ? (
         <p>Loading...</p>
       ) : (

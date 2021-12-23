@@ -1,7 +1,7 @@
 
 
 export default function Error({name, message}) {
-    
+    //renders error messages based on props from /error, /notfound, /forbidden..
     return (
         <div className="wrap">
             <h2>{name? name : "Not Found"}</h2>

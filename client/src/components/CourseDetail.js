@@ -12,13 +12,17 @@ import ReactMarkdown from "react-markdown";
 export default function CourseDetail() {
   const [course, setCourse] = useState(null);
   const { currentUser } = useContext(AuthContext);
+  //react-router v5.1-v6 hooks
   const { id } = useParams();
   const navigate = useNavigate();
 
+  //runs the Course function on render
   useEffect(() => {
     getCourse();
   }, []);
 
+
+  //finds the course, if it doesn't exist, redirects to /notfound
   const getCourse = async () => {
     const res = await fetch(`http://localhost:5000/api/courses/${id}`);
     if (res.status === 200) {
@@ -30,12 +34,7 @@ export default function CourseDetail() {
       if (json.message === "Course does not exist") {
         navigate("/notfound");
       } else {
-        navigate("/error", {
-          state: {
-            name: "Error",
-            message: "Sorry! We just encountered an unexpected error.",
-          },
-        });
+        navigate("/error");
       }
     }
   };
@@ -48,8 +47,9 @@ export default function CourseDetail() {
         <>
           <div className="actions--bar">
             <div className="wrap">
+            {/* Checks for the proper user before rendering the update/delete options */}
               {currentUser &&
-                currentUser.emailAddress == course.user.emailAddress && (
+                currentUser.emailAddress == course.user.emailAddress ? (
                   <>
                     <Link className="button" to="update">
                       Update Course
@@ -58,7 +58,7 @@ export default function CourseDetail() {
                       Delete
                     </Link>
                   </>
-                )}
+                ) : null}
               <Link className="button button-secondary" to="/">
                 Return to List
               </Link>
@@ -86,6 +86,7 @@ export default function CourseDetail() {
               </div>
             </form>
           </div>
+          {/* The Modal element for the delete confirmation (used react-routerv6 syntax) */}
           <Outlet />
         </>
       )}

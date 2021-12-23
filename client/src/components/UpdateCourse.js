@@ -19,6 +19,7 @@ export default function UpdateCourse() {
     getCourse();
   }, []);
 
+  //retrieves course data to update, sends them to forbidden if they somehow make their way here with the wrong account
   const getCourse = async () => {
     const res = await fetch(`http://localhost:5000/api/courses/${id}`);
     if (res.status === 200) {
@@ -28,7 +29,7 @@ export default function UpdateCourse() {
       setDescription(json.description);
       setEstimatedTime(json.estimatedTime);
       setMaterialsNeeded(json.materialsNeeded);
-      if(currentUser.emailAddress !== user.emailAddress){
+      if(currentUser.emailAddress !== json.user.emailAddress){
         console.log("Access Denied!")
         navigate("/forbidden")
       }
@@ -47,6 +48,8 @@ export default function UpdateCourse() {
     e.preventDefault();
     navigate(-1);
   };
+
+  //attempts to PUT the updated course, sets error state to any validation errors
   const updateCourse = async () => {
     try {
       const auth = Cookies.get("auth");
