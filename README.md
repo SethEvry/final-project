@@ -4,7 +4,7 @@
 
 - At index, loads a list of courses,
 
-##Course details
+## Course details
 
 - upon clicking a course routes to /courses/:id
 - or /notfound if a course that does not exist is entered into the URL
