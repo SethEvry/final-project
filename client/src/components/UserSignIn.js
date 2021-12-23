@@ -1,18 +1,25 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useContext, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 //context
 import { AuthContext } from "../context/authContext";
 
 export default function UserSignIn() {
 
-  const { signIn } =  useContext(AuthContext)
+  const { signIn, currentUser  } =  useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state ? location.state.from.pathname : "/";
+  //navigates to previous page if logged in or after log in state changes
+  useEffect(()=>{
+    if(currentUser){
+      navigate(from)
+    }
+  }, [currentUser])
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,9 +32,9 @@ export default function UserSignIn() {
   };
   return (
     <main>
+
       <div className="form--centered">
         <h2>Sign In</h2>
-
         <form onSubmit={handleSubmit}>
           <label htmlFor="emailAddress">Email Address</label>
           <input
