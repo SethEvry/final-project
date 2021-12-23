@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { AuthContext } from "../context/authContext";
 
 export default function UpdateCourse() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
 
   const [errors, setErrors] = useState([]);
   const [user, setUser] = useState(null);
@@ -14,17 +16,32 @@ export default function UpdateCourse() {
   const [materialsNeeded, setMaterialsNeeded] = useState("");
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/courses/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setUser(data.user);
-        setTitle(data.title);
-        setDescription(data.description);
-        setEstimatedTime(data.estimatedTime);
-        setMaterialsNeeded(data.materialsNeeded);
-      })
-      .catch((err) => console.log(err));
+    getCourse();
   }, []);
+
+  const getCourse = async () => {
+    const res = await fetch(`http://localhost:5000/api/courses/${id}`);
+    if (res.status === 200) {
+      const json = await res.json();
+      setUser(json.user);
+      setTitle(json.title);
+      setDescription(json.description);
+      setEstimatedTime(json.estimatedTime);
+      setMaterialsNeeded(json.materialsNeeded);
+      if(currentUser.emailAddress !== user.emailAddress){
+        console.log("Access Denied!")
+        navigate("/forbidden")
+      }
+    } else {
+      const json = await res.json();
+      console.log(json.message);
+      if (json.message === "Course does not exist") {
+        navigate("/notfound");
+      } else {
+        navigate("/error");
+      }
+    }
+  };
 
   const handleCancel = (e) => {
     e.preventDefault();

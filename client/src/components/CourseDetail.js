@@ -1,18 +1,44 @@
 import { useState, useEffect, useContext } from "react";
-import { Link, useParams, Outlet } from "react-router-dom";
+import {
+  Link,
+  useParams,
+  Outlet,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import { AuthContext } from "../context/authContext";
+import ReactMarkdown from "react-markdown";
 
 export default function CourseDetail() {
   const [course, setCourse] = useState(null);
   const { currentUser } = useContext(AuthContext);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/courses/${id}`)
-      .then((res) => res.json())
-      .then((data) => setCourse(data))
-      .catch((err) => console.log(err));
+    getCourse();
   }, []);
+
+  const getCourse = async () => {
+    const res = await fetch(`http://localhost:5000/api/courses/${id}`);
+    if (res.status === 200) {
+      const json = await res.json();
+      setCourse(json);
+    } else {
+      const json = await res.json();
+      console.log(json.message);
+      if (json.message === "Course does not exist") {
+        navigate("/notfound");
+      } else {
+        navigate("/error", {
+          state: {
+            name: "Error",
+            message: "Sorry! We just encountered an unexpected error.",
+          },
+        });
+      }
+    }
+  };
 
   return (
     <main>
@@ -46,10 +72,7 @@ export default function CourseDetail() {
                 <div>
                   <h3 className="course--detail--title">Course</h3>
                   <h4 className="course--name">{course.title}</h4>
-                  <p>{`By ${course.user.firstName} ${course.user.lastName}`}</p>
-                  {course.description.split("\n\n").map((string, index) => (
-                    <p key={index}>{string}</p>
-                  ))}
+                  <ReactMarkdown>{course.description}</ReactMarkdown>
                 </div>
                 <div>
                   <h3 className="course--detail--title">Estimated Time</h3>
@@ -57,12 +80,7 @@ export default function CourseDetail() {
 
                   <h3 className="course--detail--title">Materials Needed</h3>
                   <ul className="course--detail--list">
-                    {course.materialsNeeded && course.materialsNeeded
-                      .split("* ")
-                      .slice(1)
-                      .map((material) => (
-                        <li key={material}>{material}</li>
-                      ))}
+                    <ReactMarkdown>{course.materialsNeeded}</ReactMarkdown>
                   </ul>
                 </div>
               </div>

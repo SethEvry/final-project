@@ -15,6 +15,7 @@ import DeleteCourse from "./components/DeleteCourse";
 
 //context
 import { AuthContextProvider } from "./context/authContext";
+import Error from "./components/Error";
 
 function App() {
   return (
@@ -51,6 +52,26 @@ function App() {
         <Route path="signin" element={<UserSignIn />} />
         <Route path="signup" element={<UserSignUp />} />
         <Route path="signout" element={<UserSignOut />} />
+        <Route path="/notfound" element={<Error />} />
+        <Route
+          path="/forbidden"
+          element={
+            <Error
+              name="Forbidden"
+              message="Oh oh! You can't access this page."
+            />
+          }
+        />
+        <Route
+          path="/error"
+          element={
+            <Error
+              name="Error"
+              message="Sorry! We just encountered an unexpected error."
+            />
+          }
+        />
+        <Route path="*" element={<Error />} />
       </Routes>
     </AuthContextProvider>
   );
