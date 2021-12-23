@@ -1,9 +1,8 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import {
   Link,
   useParams,
   Outlet,
-  Navigate,
   useNavigate,
 } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
@@ -16,14 +15,10 @@ export default function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  //runs the Course function on render
-  useEffect(() => {
-    getCourse();
-  }, []);
 
-
-  //finds the course, if it doesn't exist, redirects to /notfound
-  const getCourse = async () => {
+  
+   //finds the course, if it doesn't exist, redirects to /notfound
+   const getCourse = useCallback(async () => {
     const res = await fetch(`http://localhost:5000/api/courses/${id}`);
     if (res.status === 200) {
       const json = await res.json();
@@ -37,8 +32,16 @@ export default function CourseDetail() {
         navigate("/error");
       }
     }
-  };
+  }, [id, navigate])
 
+  //runs the Course function on render
+  useEffect(() => {
+    console.log('use effect ran');
+    getCourse();
+  }, [getCourse]);
+
+
+ 
   return (
     <main>
       {!course ? (
@@ -49,7 +52,7 @@ export default function CourseDetail() {
             <div className="wrap">
             {/* Checks for the proper user before rendering the update/delete options */}
               {currentUser &&
-                currentUser.emailAddress == course.user.emailAddress ? (
+                currentUser.emailAddress === course.user.emailAddress ? (
                   <>
                     <Link className="button" to="update">
                       Update Course
